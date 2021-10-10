@@ -23,5 +23,6 @@ namespace Orders_Register.Food_Register
         {
             InitializeComponent();
         }
+
     }
 }
