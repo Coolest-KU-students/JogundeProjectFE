@@ -1,0 +1,16 @@
+﻿<Window x:Class="Orders_Register.New_Order_for_a_Company.NewOrderForCompany"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Orders_Register.New_Order_for_a_Company"
+        mc:Ignorable="d"
+        Title="Užsakymas Įmonei" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="383*"/>
+            <ColumnDefinition Width="409*"/>
+        </Grid.ColumnDefinitions>
+
+    </Grid>
+</Window>
