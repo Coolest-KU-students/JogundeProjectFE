@@ -38,6 +38,8 @@ namespace Orders_Register.Food_Register
 
                 _tabItems.Add(_tabAdd);
 
+                
+
                 // add first tab
                 AddTabItem();
 
