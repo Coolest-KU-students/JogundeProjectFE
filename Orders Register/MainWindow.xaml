@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Orders_Register"
         mc:Ignorable="d"
+        ResizeMode="NoResize"
         Title="Užsakymų Sistema" Height="315.996" Width="257.646">
     <Grid>
         <Grid.ColumnDefinitions>
