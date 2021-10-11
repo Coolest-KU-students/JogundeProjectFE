@@ -13,15 +13,12 @@ namespace WpfApp1.DataSources.Global
 {
     public static class DatabaseManager
     {
-        public enum ConversionTypes
-        {
-            INT32 = 1,
-            STRING = 2,
-            BOOL = 3
-        }
 
         static string connStr = "Server=127.0.0.1;User=root;Database=jogunde;Port=3306;Password=;SSL Mode=None";
-        
+
+        /// <summary>
+        /// Tests if connection to the database is possible
+        /// </summary>
         public static bool testConnection()
         {
             MySqlConnection conn = new MySqlConnection(connStr);
@@ -41,6 +38,9 @@ namespace WpfApp1.DataSources.Global
             return true;
         }
 
+        /// <summary>
+        /// Returns MySqlConnection with the database connection
+        /// </summary>
         public static MySqlConnection RetrieveDBConnection()
         {
             if (!testConnection())
@@ -51,6 +51,10 @@ namespace WpfApp1.DataSources.Global
             MySqlConnection DBConnection = new MySqlConnection(connStr);
             return DBConnection;
         }
+
+        /// <summary>
+        /// Returns MySqlConnection with an opne database connection. Close connection after usage!
+        /// </summary>
         public static MySqlConnection RetrieveOpenDBConnection()
         {
             MySqlConnection DBConnection = RetrieveDBConnection();
@@ -58,6 +62,9 @@ namespace WpfApp1.DataSources.Global
             return DBConnection;
         }
 
+        /// <summary>
+        /// Returns MySqlDataReader with data retrieved from query execution
+        /// </summary>
         public static MySqlDataReader executeReaderQuery(string Query)
         {
             MySqlConnection DBConnection = RetrieveOpenDBConnection();
@@ -67,17 +74,24 @@ namespace WpfApp1.DataSources.Global
             return mySqlData;
         }
 
+        /// <summary>
+        /// Builds and executes a select query based on Object Name and WhereClause. Returns MySqlDataReader with query results
+        /// </summary>
         public static MySqlDataReader GetDataFromView(string Name, string WhereClause)
         {
             string query = "SELECT * FROM " + Name + (string.IsNullOrEmpty(WhereClause) ? "" : " WHERE " + WhereClause);
             return executeReaderQuery(query);
+  
         }
 
+        /// <summary>
+        /// Executes a provided query expecting only 1 result. Returns the result as an object
+        /// </summary>
         public static object ExecuteScalarQuery(string query)
         {
             MySqlConnection DBConnection = RetrieveOpenDBConnection();
             MySqlCommand sqlCommand = new MySqlCommand(query, DBConnection);
-
+            
             object sqlResult = sqlCommand.ExecuteScalar();
 
             if (sqlResult != null)
@@ -90,19 +104,42 @@ namespace WpfApp1.DataSources.Global
             }
         }
 
+        /// <summary>
+        /// Executes a provided query expecting only 1 result. Outs the result into second parameter as an int
+        /// </summary>
         public static void ExecuteQueryWithResultConversion(string query, out int result)
         {
             result = Convert.ToInt32(ExecuteScalarQuery(query));
         }
-
+        /// <summary>
+        /// Executes a provided query expecting only 1 result. Outs the result into second parameter as an string
+        /// </summary>
         public static void ExecuteQueryWithResultConversion(string query, out string result)
         {
             result = ExecuteScalarQuery(query).ToString();
         }
+        /// <summary>
+        /// Executes a provided query expecting only 1 result. Outs the result into second parameter as a boolean
+        /// </summary>
         public static void ExecuteQueryWithResultConversion(string query, out bool result)
         {
             result = Convert.ToBoolean(ExecuteScalarQuery(query));
         }
+        /// <summary>
+        /// Executes a resultless query and return the number of rows affected
+        /// </summary>
+        public static int ExecuteWithoutResult(string query)
+        {
+            MySqlConnection mySql = RetrieveOpenDBConnection();
+            MySqlCommand command = new MySqlCommand(query);
+            int rowsAffected = command.ExecuteNonQuery();
+            mySql.Close();
+            return rowsAffected;
+        }
+
+        /// <summary>
+        /// Rxecutes a COUNT(*) on provided View's name and whereClause. 
+        /// </summary>
         public static int GetRowCountFromView(string Name, string WhereClause)
         {
             string query = "SELECT COUNT(1) FROM " + Name + (string.IsNullOrEmpty(WhereClause) ? "" : " WHERE " + WhereClause);
@@ -110,14 +147,119 @@ namespace WpfApp1.DataSources.Global
             ExecuteQueryWithResultConversion(query, out count);
             return count;
         }
+        /// <summary>
+        /// Builds and executes a select to check if the columns actually exist in the object
+        /// </summary>
+        public static void CheckColumnExistenceInTable(string Name, List<string> ColumnNames)
+        {
+            string query = "SELECT 1 WHERE EXISTS(SELECT @REPLACE@ FROM " + Name + ")";
 
-        //public static DataTable getDataFromView(string Name)
-        //{
-        //    MySqlConnection DBConnection = retrieveDBConnection();
+            string columnNames = "";
+            foreach(string column in ColumnNames)
+            {
+                columnNames += column + ",";
+            }
+            columnNames += "1";
 
-        //}
+            query = query.Replace("@REPLACE@", columnNames);
+            try
+            {
+                object result = ExecuteScalarQuery(query);
+            }
+            catch(Exception ex)
+            {
+                throw new ArgumentException("A Select with provided column names threw an error: " + ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Will insert provided Column:Value pairs into the provided Name.
+        /// </summary>
+        public static void InsertRowToTable(string Name, Dictionary<string, string> columnValuePairs)
+        {
+            CheckColumnExistenceInTable(Name, new List<string>(columnValuePairs.Keys));
+
+            string query = "INSERT INTO " + Name + " (@@COLUMN_NAMES@@) VALUES (@@VALUES@@) ";
+
+            string columnNames = "";
+            string insertValues = "";
+            
+            foreach(KeyValuePair<string, string> columnValuePair in columnValuePairs)
+            {
+                columnNames += columnValuePair.Key + ", ";
+                insertValues += "'" + BeautifyStringForQuery(columnValuePair.Value) + "', ";
+            }
+
+            columnNames += "~~";
+            insertValues += "~~";
+            columnNames = columnNames.Replace(", ~~", "");
+            insertValues = insertValues.Replace(", ~~", "");
+
+            query = query.Replace("@@COLUMN_NAMES@@", columnNames).Replace("@@VALUES@@", insertValues);
+
+            ExecuteWithoutResult(query);
+        }
+
+        /// <summary>
+        /// Will insert provided list of Column:Value pairs into the provided Name.
+        /// </summary>
+        public static void InsertRowsToTable(string Name, List<Dictionary<string, string>> columnValuePairList)
+        {
+            foreach(Dictionary<string, string> keyValuePairs in columnValuePairList)
+            {
+                InsertRowToTable(Name, keyValuePairs);
+            }
+        }
+        /// <summary>
+        /// Will update provided columnValuePairs based on the where clause and return number of rows that were updated.
+        /// </summary>
+        public static int UpdateTableValues(string Name, Dictionary<string, string> columnValuePairs, string whereClause)
+        {
+            string query = "UPDATE " + Name + " SET @@PAIR_LISTING@@ " + (string.IsNullOrEmpty(whereClause) ? "" : " WHERE " + whereClause);
+
+            CheckColumnExistenceInTable(Name, new List<string>(columnValuePairs.Keys));
+
+            string PairListing = "";
+
+            foreach (KeyValuePair<string, string> columnValuePair in columnValuePairs)
+            {
+                PairListing += columnValuePair.Key + " = '" + BeautifyStringForQuery(columnValuePair.Value) + "', ";
+            }
+
+            PairListing += "~~";
+            query = query.Replace("@@PAIR_LISTING@@", PairListing.Replace(", ~~", ""));
+
+            return ExecuteWithoutResult(query);
+        }
+
+
+        /// <summary>
+        /// Will delete provided data from table based on whereClause. 
+        /// </summary>
+        public static int UpdateTableValues(string Name, string whereClause, bool whereClauseIsEmpty)
+        {
+            if(string.IsNullOrEmpty(whereClause) && !whereClauseIsEmpty)
+            {
+                throw new ArgumentNullException("whereClause was provided Empty");
+            }
+            else if(!string.IsNullOrEmpty(whereClause) && whereClauseIsEmpty)
+            {
+                throw new ArgumentNullException("whereClause was provided, while it was specified to be empty");
+            }
+
+            string query = "DELETE FROM " + Name + (string.IsNullOrEmpty(whereClause) ? "" : " WHERE " + whereClause);
+
+            return ExecuteWithoutResult(query);
+        }
+
+        /// <summary>
+        /// Will ensure that the provided string will not break the code.
+        /// </summary>
+        static string BeautifyStringForQuery(string query)
+        {
+            return query.Replace("'", "''");
+        }
     }
-
-    
+  
 }
 
