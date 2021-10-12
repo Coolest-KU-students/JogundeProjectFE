@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+using WpfApp1.DataSources;
+
 namespace Orders_Register.Food_Register
 {
     /// <summary>
@@ -20,11 +22,13 @@ namespace Orders_Register.Food_Register
     /// </summary>
     public partial class FoodRegister : Window
     {
+        private List<DataSources.FoodTypes.FoodType> _foodTypes;
         private List<TabItem> _tabItems;
         private TabItem _tabAdd;
 
         public FoodRegister()
         {
+            _foodTypes = DataSources.FoodTypes.GetAllFoodTypes();
             try
             {
                 InitializeComponent();
@@ -33,14 +37,12 @@ namespace Orders_Register.Food_Register
                 // initialize tabItem array
                 _tabItems = new List<TabItem>();
 
-                // add a tabItem with + in header 
+                // add a tabItem with + in header
                 _tabAdd = new TabItem();
                 _tabAdd.Header = "+";
                 // tabAdd.MouseLeftButtonUp += new MouseButtonEventHandler(tabAdd_MouseLeftButtonUp);
 
                 _tabItems.Add(_tabAdd);
-
-                
 
                 // add first tab
                 AddTabItem();
