@@ -106,10 +106,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Food Register\TabProperty.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -121,12 +117,11 @@
     <Compile Include="Companies Register\CompaniesRegister.xaml.cs">
       <DependentUpon>CompaniesRegister.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataSources\FoodTypes.cs" />
+    <Compile Include="DataSources\Global\GlobalParentTable.cs" />
     <Compile Include="DataSources\Global\DatabaseManager.cs" />
     <Compile Include="Food Register\FoodRegister.xaml.cs">
       <DependentUpon>FoodRegister.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Food Register\TabProperty.xaml.cs">
-      <DependentUpon>TabProperty.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

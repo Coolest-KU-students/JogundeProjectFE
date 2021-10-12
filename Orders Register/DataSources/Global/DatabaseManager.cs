@@ -65,19 +65,24 @@ namespace WpfApp1.DataSources.Global
         /// <summary>
         /// Returns MySqlDataReader with data retrieved from query execution
         /// </summary>
-        public static MySqlDataReader executeReaderQuery(string Query)
+        public static DataTable executeReaderQuery(string Query)
         {
             MySqlConnection DBConnection = RetrieveOpenDBConnection();
             MySqlCommand sqlCommand = new MySqlCommand(Query, DBConnection);
             MySqlDataReader mySqlData = sqlCommand.ExecuteReader();
+
+            DataTable resultTable = new DataTable();
+            resultTable.Load(mySqlData);
+
+            mySqlData.Close();
             DBConnection.Close();
-            return mySqlData;
+            return resultTable;
         }
 
         /// <summary>
         /// Builds and executes a select query based on Object Name and WhereClause. Returns MySqlDataReader with query results
         /// </summary>
-        public static MySqlDataReader GetDataFromView(string Name, string WhereClause)
+        public static DataTable GetDataFromView(string Name, string WhereClause)
         {
             string query = "SELECT * FROM " + Name + (string.IsNullOrEmpty(WhereClause) ? "" : " WHERE " + WhereClause);
             return executeReaderQuery(query);
@@ -93,6 +98,8 @@ namespace WpfApp1.DataSources.Global
             MySqlCommand sqlCommand = new MySqlCommand(query, DBConnection);
             
             object sqlResult = sqlCommand.ExecuteScalar();
+
+            DBConnection.Close();
 
             if (sqlResult != null)
             {
@@ -131,7 +138,7 @@ namespace WpfApp1.DataSources.Global
         public static int ExecuteWithoutResult(string query)
         {
             MySqlConnection mySql = RetrieveOpenDBConnection();
-            MySqlCommand command = new MySqlCommand(query);
+            MySqlCommand command = new MySqlCommand(query, mySql);
             int rowsAffected = command.ExecuteNonQuery();
             mySql.Close();
             return rowsAffected;
@@ -236,7 +243,7 @@ namespace WpfApp1.DataSources.Global
         /// <summary>
         /// Will delete provided data from table based on whereClause. 
         /// </summary>
-        public static int UpdateTableValues(string Name, string whereClause, bool whereClauseIsEmpty)
+        public static int DeleteTableValues(string Name, string whereClause, bool whereClauseIsEmpty)
         {
             if(string.IsNullOrEmpty(whereClause) && !whereClauseIsEmpty)
             {

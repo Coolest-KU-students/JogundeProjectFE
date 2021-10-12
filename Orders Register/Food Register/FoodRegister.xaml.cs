@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Orders_Register.DataSources;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WpfApp1.DataSources;
 
 namespace Orders_Register.Food_Register
 {
@@ -27,6 +29,7 @@ namespace Orders_Register.Food_Register
             try
             {
                 InitializeComponent();
+
 
                 // initialize tabItem array
                 _tabItems = new List<TabItem>();
@@ -97,16 +100,16 @@ namespace Orders_Register.Food_Register
         {
             TabItem tab = sender as TabItem;
 
-            TabProperty dlg = new TabProperty();
+            //TabProperty dlg = new TabProperty();
 
-            // get existing header text
-            dlg.txtTitle.Text = tab.Header.ToString();
+            //// get existing header text
+            //dlg.txtTitle.Text = tab.Header.ToString();
 
-            if (dlg.ShowDialog() == true)
-            {
-                // change header text
-                tab.Header = dlg.txtTitle.Text.Trim();
-            }
+            //if (dlg.ShowDialog() == true)
+            //{
+            //    // change header text
+            //    tab.Header = dlg.txtTitle.Text.Trim();
+            //}
         }
 
         private void tabDynamic_SelectionChanged(object sender, SelectionChangedEventArgs e)

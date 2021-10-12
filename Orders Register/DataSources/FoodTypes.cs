@@ -19,12 +19,16 @@ namespace Orders_Register.DataSources
         {
             int ID;
             string Name;
-        
+
             public FoodType(DateTime Created, DateTime Updated, int ID, string Name)
             {
                 this.Created = Created;
                 this.Updated = Updated;
                 this.ID = ID;
+                this.Name = Name;
+            }
+            public FoodType(string Name)
+            {
                 this.Name = Name;
             }
 
@@ -43,13 +47,25 @@ namespace Orders_Register.DataSources
                 this.Name = Name;
             }
 
+            public Dictionary<string, string> ToDictionary()
+            {
+                Dictionary<string, string> result = new Dictionary<string, string>();
+                result.Add("ID", getID().ToString());
+                result.Add("Name", getName());
+                
+                return result;
+            }
+            public Dictionary<string, string> ToDictionaryWithoutID()
+            {
+                Dictionary<string, string> result = ToDictionary();
+                result.Remove("ID");
+                return result;
+            }
         }
 
         public static List<FoodType> GetAllFoodTypes()
         {
-            MySqlDataReader dataReader = DatabaseManager.GetDataFromView(TableName, "");
-            DataTable foodTypeTable = dataReader.GetSchemaTable();
-
+            DataTable foodTypeTable = DatabaseManager.GetDataFromView(TableName, "");
             List<FoodType> foodTypes = new List<FoodType>();
 
             foreach(DataRow vRow in foodTypeTable.Rows)
@@ -58,6 +74,25 @@ namespace Orders_Register.DataSources
             }
 
             return foodTypes;
+        }
+
+        public static void Save(FoodType FT)
+        {
+            DatabaseManager.InsertRowToTable(TableName, FT.ToDictionaryWithoutID());
+        }
+
+        public static void Update(FoodType FT)
+        {
+            string whereClause = "ID = " + FT.getID().ToString();
+
+            DatabaseManager.UpdateTableValues(TableName, FT.ToDictionaryWithoutID(), whereClause);
+        }
+
+        public static void Delete(FoodType FT)
+        {
+            string whereClause = "ID = " + FT.getID().ToString();
+
+            DatabaseManager.DeleteTableValues(TableName, whereClause, false);
         }
     }
 }

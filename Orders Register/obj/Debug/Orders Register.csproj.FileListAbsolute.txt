@@ -171,7 +171,6 @@ C:\Users\lukasj\Documents\Arduino\JogundeProjectFE\Orders Register\obj\Debug\Ord
 C:\Users\lukasj\Documents\Arduino\JogundeProjectFE\Orders Register\obj\Debug\Orders_Register.Properties.Resources.resources
 C:\Users\lukasj\Documents\Arduino\JogundeProjectFE\Orders Register\obj\Debug\Orders Register.csproj.GenerateResource.cache
 C:\Users\lukasj\Documents\Arduino\JogundeProjectFE\Orders Register\obj\Debug\Orders Register.csproj.CoreCompileInputs.cache
-C:\Users\lukasj\Documents\Arduino\JogundeProjectFE\Orders Register\obj\Debug\Orders Register.csproj.CopyComplete
 C:\Users\valdp\Documents\GitHub\JogundeProjectFE\Orders Register\obj\Debug\Orders Register.csproj.AssemblyReference.cache
 C:\Users\valdp\Documents\GitHub\JogundeProjectFE\Orders Register\obj\Debug\Orders Register.exe.config
 C:\Users\valdp\Documents\GitHub\JogundeProjectFE\Orders Register\obj\Debug\Companies Register\CompaniesRegister.g.cs
