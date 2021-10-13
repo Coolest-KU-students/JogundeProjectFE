@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WpfApp1.DataSources.Global;
+using Orders_Register.DataSources.Global;
 
 using MySql.Data;
 using MySql.Data.MySqlClient;
@@ -11,7 +11,7 @@ using System.Data;
 
 namespace Orders_Register.DataSources
 {
-    static class FoodTypes
+    static class FoodTypesRepo
     {
         private static string TableName = "tbl_FoodTypes";
 
@@ -63,6 +63,17 @@ namespace Orders_Register.DataSources
             }
         }
 
+        public static FoodType extractFoodType(DataRow vRow)
+        {
+            return new FoodType(Convert.ToDateTime(vRow["Created"]), Convert.ToDateTime(vRow["Updated"]), Convert.ToInt32(vRow["ID"]), vRow["Name"].ToString());
+        }
+
+        public static FoodType getByID(int ID)
+        {
+            DataRow vRow = DatabaseManager.GetDataFromView(TableName, "ID = '" + ID + "'").Rows[0];
+            return extractFoodType(vRow);
+        }
+
         public static List<FoodType> GetAllFoodTypes()
         {
             DataTable foodTypeTable = DatabaseManager.GetDataFromView(TableName, "");
@@ -70,7 +81,7 @@ namespace Orders_Register.DataSources
 
             foreach(DataRow vRow in foodTypeTable.Rows)
             {
-                foodTypes.Add(new FoodType(Convert.ToDateTime(vRow["Created"]), Convert.ToDateTime(vRow["Updated"]), Convert.ToInt32(vRow["ID"]), vRow["Name"].ToString()));
+                foodTypes.Add(extractFoodType(vRow));
             }
 
             return foodTypes;
@@ -84,14 +95,12 @@ namespace Orders_Register.DataSources
         public static void Update(FoodType FT)
         {
             string whereClause = "ID = " + FT.getID().ToString();
-
             DatabaseManager.UpdateTableValues(TableName, FT.ToDictionaryWithoutID(), whereClause);
         }
 
         public static void Delete(FoodType FT)
         {
             string whereClause = "ID = " + FT.getID().ToString();
-
             DatabaseManager.DeleteTableValues(TableName, whereClause, false);
         }
     }

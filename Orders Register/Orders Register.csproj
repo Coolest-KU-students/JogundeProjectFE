@@ -117,9 +117,13 @@
     <Compile Include="Companies Register\CompaniesRegister.xaml.cs">
       <DependentUpon>CompaniesRegister.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataSources\FoodTypes.cs" />
+    <Compile Include="DataSources\FoodCollectionsRepo.cs" />
+    <Compile Include="DataSources\OrdersRepo.cs" />
+    <Compile Include="DataSources\FoodProductsRepo.cs" />
+    <Compile Include="DataSources\FoodTypesRepo.cs" />
     <Compile Include="DataSources\Global\GlobalParentTable.cs" />
     <Compile Include="DataSources\Global\DatabaseManager.cs" />
+    <Compile Include="DataSources\ProductsCollectionsRepo.cs" />
     <Compile Include="Food Register\FoodRegister.xaml.cs">
       <DependentUpon>FoodRegister.xaml</DependentUpon>
     </Compile>

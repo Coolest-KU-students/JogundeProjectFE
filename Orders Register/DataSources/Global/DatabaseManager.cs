@@ -9,7 +9,7 @@ using System.Data;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 
-namespace WpfApp1.DataSources.Global
+namespace Orders_Register.DataSources.Global
 {
     public static class DatabaseManager
     {
