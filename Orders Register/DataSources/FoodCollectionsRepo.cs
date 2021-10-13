@@ -58,7 +58,7 @@ namespace Orders_Register.DataSources
 
             public List<FoodProductsRepo.FoodProduct> getAllProductsFromTheCollection()
             {
-                return ProductsCollectionsRepo.getByProductID(getID());
+                return ProductsCollectionsRepo.getByCollectionID(getID());
             }
         }
     
