@@ -69,9 +69,9 @@ namespace Orders_Register.DataSources
             DataRow vRow = DatabaseManager.GetDataFromView(TableName, "ID = '" + ID + "'").Rows[0];
             return extractProductsCollection(vRow);
         }
-        public static List<FoodCollectionsRepo.FoodCollection> getByCollectionID(int collectionID)
+        public static List<FoodCollectionsRepo.FoodCollection> getByProductID(int productID)
         {
-            DataTable dataTable = DatabaseManager.GetDataFromView(TableName, "collectionID = '" + collectionID + "'");
+            DataTable dataTable = DatabaseManager.GetDataFromView(TableName, "productID = '" + productID + "'");
             List<FoodCollectionsRepo.FoodCollection> FoodCollectionsList = new List<FoodCollectionsRepo.FoodCollection>();
 
             foreach (DataRow vRow in dataTable.Rows)
@@ -82,9 +82,9 @@ namespace Orders_Register.DataSources
             return FoodCollectionsList;
         }
 
-        public static List<FoodProductsRepo.FoodProduct> getByProductID(int productID)
+        public static List<FoodProductsRepo.FoodProduct> getByCollectionID(int collectionID)
         {
-            DataTable dataTable = DatabaseManager.GetDataFromView(TableName, "collectionID = '" + productID + "'");
+            DataTable dataTable = DatabaseManager.GetDataFromView(TableName, "collectionID = '" + collectionID + "'");
             List<FoodProductsRepo.FoodProduct> FoodCollectionsList = new List<FoodProductsRepo.FoodProduct>();
 
             foreach (DataRow vRow in dataTable.Rows)
